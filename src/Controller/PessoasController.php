@@ -20,8 +20,7 @@ class PessoasController extends AppController
     }
 
     
-    public function recuperar($id = null)
-    {
+    public function recuperar($id = null){
         $pessoa = $this->Pessoas->get($id, [
             'contain' => []
         ]);
@@ -79,4 +78,38 @@ class PessoasController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
-}
+
+    public function AddJason(){
+       $res = array();
+       $pessoa = $this->Pessoas->newEntity();
+        if ($this->request->is('post')) {
+            $pessoa = $this->Pessoas->patchEntity($pessoa, $this->request->data);
+            if ($this->Pessoas->save($pessoa)) {
+                $res['status'] = 1;
+                $res['msg'] = 'Salvo com sucesso';
+                echo $res;
+
+            } else {
+               $res['status'] = 0;
+                $res['msg'] = 'Nao foi possivel salvar';
+            }
+        }
+        $this->set(compact('res'));
+        $this->set('_serialize', ['res']);
+
+        }
+
+    public function recuperarJson(){
+
+        $res = array();
+
+        $pessoas = $this->Pessoas->find('all');
+        $res['status'] = 1;
+        $res['arq'] = json_encode($pessoas);
+        $this->set(compact('res'));
+        $this->set('_serialize', ['res']);
+        echo $res['arq'];
+        exit(); 
+       
+        }
+    }
